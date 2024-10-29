@@ -1,6 +1,4 @@
-import "/home/charmavr/project/movie-app-nextjs/src/app/globals.css";
-
-export default function RootLayout({
+export default function LoginLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
