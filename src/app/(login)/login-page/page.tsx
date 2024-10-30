@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
 import Image from "next/image";
+import { GoogleLoginButton } from "../components/googleLoginButton";
 
 export default function LoginPage() {
 	const [showPassword, setShowPassword] =
@@ -77,10 +78,10 @@ export default function LoginPage() {
 
 							<div className="my-2">or</div>
 
-							<button className="border border-gray-300 py-2 px-4 w-full rounded-3xl hover:bg-slate-100 flex items-center justify-center">
+							<GoogleLoginButton>
 								<GoogleIcon className="mr-2   " />
 								Sign in with Google
-							</button>
+							</GoogleLoginButton>
 						</div>
 					</div>
 				</div>
