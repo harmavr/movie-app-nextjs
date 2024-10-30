@@ -29,7 +29,7 @@ export const GoogleLoginButton: FC<
 	const loginWithGoogle = () => {
 		signIn("google", {
 			callbackUrl:
-				"http://localhost:3000/content-page",
+				"http://localhost:3000/home-page",
 		});
 	};
 
