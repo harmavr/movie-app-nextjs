@@ -7,10 +7,10 @@ export default function SecondaryMainNavigation() {
 			<div className="container mx-auto flex justify-start items-center ">
 				<div className="flex items-center space-x-6">
 					<Link
-						href={""}
+						href={"/movies-list"}
 						className="text-gray-600 hover:underline  "
 					>
-						1
+						Browse Movies
 					</Link>
 
 					<Link

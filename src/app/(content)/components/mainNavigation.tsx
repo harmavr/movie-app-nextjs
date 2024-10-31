@@ -13,8 +13,8 @@ export default function MainNavigation() {
 	useEffect(() => {
 		const checkSession = async () => {
 			const session = await getSession();
-			if (session) {
-				setUsername(session.user?.name!);
+			if (session && session.user) {
+				setUsername(session.user.name!);
 			}
 		};
 
@@ -26,7 +26,7 @@ export default function MainNavigation() {
 			<div className="flex justify-between items-center px-4 py-2">
 				<div className="flex items-center space-x-2">
 					<Link
-						href="/content-page"
+						href="/home-page"
 						className="hover:underline flex items-center"
 					>
 						<Image

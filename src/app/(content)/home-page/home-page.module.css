@@ -1,0 +1,5 @@
+.homePageContainer {
+	background-image: url("/font-background.jpg");
+	height: 100vh;
+	background-size: cover;
+}

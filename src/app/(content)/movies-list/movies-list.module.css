@@ -1,0 +1,6 @@
+.moviesListPageContainer {
+	background-image: url("/movies-list.jpg");
+	height: 100vh;
+	background-size: cover;
+	background-repeat: repeat;
+}
