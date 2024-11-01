@@ -1,12 +1,28 @@
 import React from "react";
 
+interface PaginationValues {
+	totalPages: number;
+	searchMovieHandler: (
+		searchedMovie: string,
+		page: number
+	) => void;
+	searchedMovie: string;
+	currentPage: number;
+}
+
 export default function Pagination({
 	totalPages,
+	searchMovieHandler,
+	searchedMovie,
 	currentPage,
-}) {
+}: PaginationValues) {
 	const pages = [];
 
-	const changeCurrentPageHandler = () => {};
+	const changeCurrentPageHandler = (
+		page: number
+	) => {
+		searchMovieHandler(searchedMovie, page);
+	};
 
 	for (
 		let index = 1;
@@ -17,15 +33,20 @@ export default function Pagination({
 	}
 
 	return (
-		<div>
-			{pages.map((el) => (
+		<div className="space-x-3">
+			{pages.map((page, id) => (
 				<button
-					key={el.id}
-					className="bg-blue-400 p-4"
-					onClick={changeCurrentPageHandler}
+					key={id}
+					className={` p-4 rounded-md hover:bg-blue-200 ${
+						currentPage === id
+							? "bg-blue-900"
+							: "bg-blue-400"
+					}`}
+					onClick={() =>
+						changeCurrentPageHandler(id + 1)
+					}
 				>
-					{" "}
-					{el}
+					{page}
 				</button>
 			))}
 		</div>

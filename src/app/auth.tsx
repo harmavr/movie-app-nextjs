@@ -16,6 +16,7 @@ export const authOptions = {
 			},
 		}),
 	],
+	movies_api_key: process.env.MOVIE_API_KEY,
 };
 
 export default NextAuth(authOptions);

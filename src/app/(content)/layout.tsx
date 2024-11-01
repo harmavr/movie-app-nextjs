@@ -1,3 +1,4 @@
+import ArrowScrollTop from "./components/arrowScrollTop";
 import MainNavigation from "./components/mainNavigation";
 
 export default function RootLayout({
@@ -9,6 +10,8 @@ export default function RootLayout({
 		<html lang="en">
 			<body>
 				<MainNavigation />
+
+				<ArrowScrollTop />
 				{children}
 			</body>
 		</html>
