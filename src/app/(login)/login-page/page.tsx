@@ -9,6 +9,28 @@ export default function LoginPage() {
 	const [showPassword, setShowPassword] =
 		useState(true);
 
+	const API_KEY =
+		process.env.NEXT_PUBLIC_MOVIE_API_KEY;
+
+	const signInHandler = () => {
+		const options = {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				Authorization: "Bearer " + API_KEY,
+			},
+			body: "{}",
+		};
+
+		fetch(
+			"https://api.themoviedb.org/3/authentication/guest_session/new",
+			options
+		)
+			.then((res) => res.json())
+			.then((res) => console.log(res))
+			.catch((err) => console.error(err));
+	};
+
 	return (
 		<>
 			<div className="flex flex-col h-screen">
@@ -72,7 +94,10 @@ export default function LoginPage() {
 							Forgot password?
 						</button>
 						<div className="flex flex-col justify-center items-center ">
-							<button className="bg-blue-600 text-white py-2 w-full rounded-3xl hover:bg-blue-400">
+							<button
+								className="bg-blue-600 text-white py-2 w-full rounded-3xl hover:bg-blue-400"
+								onClick={signInHandler}
+							>
 								Sign in
 							</button>
 
