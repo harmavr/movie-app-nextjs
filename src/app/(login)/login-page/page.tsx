@@ -55,7 +55,14 @@ export default function LoginPage() {
 	};
 
 	const checkUserCredentials = () => {
-		console.log(userEmail, userCredentials.email);
+		console.log(userPhone, userCredentials.phone);
+
+		console.log(
+			(userEmail === userCredentials.email ||
+				userPhone ===
+					parseInt(userCredentials.phone)) &&
+				userPassword === userCredentials.password
+		);
 
 		if (
 			(userEmail === userCredentials.email ||

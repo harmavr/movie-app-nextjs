@@ -7,13 +7,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body>
-				<MainNavigation />
+		<>
+			<MainNavigation />
 
-				<ArrowScrollTop />
-				{children}
-			</body>
-		</html>
+			<ArrowScrollTop />
+			{children}
+		</>
 	);
 }

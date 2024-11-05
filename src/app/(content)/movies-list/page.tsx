@@ -81,7 +81,7 @@ export default function MoviesList() {
 		<div
 			className={`${styles.moviesListPageContainer} flex flex-col space-y-10 p-4 pb-16`}
 		>
-			<div className="flex justify-center pt-10 space-x-4">
+			<div className="flex justify-center items-start space-x-4 pt-40">
 				<input
 					type="text"
 					className="w-1/2 p-4"
