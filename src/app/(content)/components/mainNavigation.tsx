@@ -6,20 +6,28 @@ import { getSession } from "next-auth/react";
 import Image from "next/image";
 import UserLoginDropdown from "./userLoginDropdown";
 import SecondaryMainNavigation from "./secondaryNavigation";
+import { useAppSelector } from "@/lib/hooks";
 
 export default function MainNavigation() {
 	const [username, setUsername] = useState("");
+
+	const { first_name, last_name } =
+		useAppSelector((state) => state.user);
 
 	useEffect(() => {
 		const checkSession = async () => {
 			const session = await getSession();
 			if (session && session.user) {
 				setUsername(session.user.name!);
+			} else {
+				setUsername(
+					`${first_name}  ${last_name}`
+				);
 			}
 		};
 
 		checkSession();
-	}, []); // Added an empty dependency array to prevent re-rendering
+	}, [first_name, last_name]);
 
 	return (
 		<nav className="bg-white shadow-lg sticky p-4 top-0 z-10">
