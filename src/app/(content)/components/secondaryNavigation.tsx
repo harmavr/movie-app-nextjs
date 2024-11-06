@@ -14,10 +14,10 @@ export default function SecondaryMainNavigation() {
 					</Link>
 
 					<Link
-						href={""}
+						href={"/collections"}
 						className="text-gray-600 hover:underline  "
 					>
-						2
+						Collections
 					</Link>
 				</div>
 			</div>

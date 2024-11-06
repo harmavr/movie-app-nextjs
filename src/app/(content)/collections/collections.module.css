@@ -1,0 +1,5 @@
+.collectionsContainer {
+	background-image: url("/movies-collection.jpg");
+	height: 100vh;
+	background-size: contain;
+}
