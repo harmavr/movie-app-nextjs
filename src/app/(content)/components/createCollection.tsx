@@ -56,6 +56,17 @@ export default function CreateCollection() {
 		}
 	};
 
+	const displayCollectionHandler = () => {
+		fetch("/api/collection/", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+			.then((res) => res.json())
+			.then((res) => console.log(res.data));
+	};
+
 	return (
 		<div className="border-2 bg-gray-50 w-1/2 flex items-center flex-col space-y-4">
 			<h1 className="text-3xl">
@@ -116,6 +127,12 @@ export default function CreateCollection() {
 						Save
 					</button>
 				</div>
+
+				<button
+					onClick={displayCollectionHandler}
+				>
+					Show Collection
+				</button>
 			</div>
 		</div>
 	);
