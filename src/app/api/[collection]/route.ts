@@ -2,15 +2,24 @@ import { MongoClient } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-	const dummy_data = [
-		{ id: 1, name: "geia" },
-		{ id: 2, name: "ela" },
-	];
+	const db_password =
+		process.env.NEXT_PUBLIC_DB_PASSWORD;
+
+	const client = await MongoClient.connect(
+		`mongodb+srv://charis:${db_password}@cluster0.3rv7l.mongodb.net/movies?retryWrites=true&w=majority&appName=Cluster0`
+	);
+	const db = client.db();
+
+	const documents = await db
+		.collection("movies_collections")
+		.find()
+		.sort({ _id: -1 }) //sort in descended order
+		.toArray();
 
 	return NextResponse.json(
 		{
 			message: "GET request successful!",
-			data: dummy_data,
+			data: documents,
 		},
 		{ status: 200 }
 	);

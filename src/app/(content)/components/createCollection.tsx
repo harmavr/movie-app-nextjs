@@ -24,7 +24,7 @@ export default function CreateCollection() {
 		);
 
 		if (title !== "" && description !== "") {
-			fetch("/api/collection", {
+			fetch("/api/collection/", {
 				method: "POST",
 				body: JSON.stringify({
 					collection: { title, description },
@@ -128,11 +128,11 @@ export default function CreateCollection() {
 					</button>
 				</div>
 
-				<button
+				{/* <button
 					onClick={displayCollectionHandler}
 				>
 					Show Collection
-				</button>
+				</button> */}
 			</div>
 		</div>
 	);

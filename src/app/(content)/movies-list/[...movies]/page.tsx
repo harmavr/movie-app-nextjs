@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React, {
+	Fragment,
 	useEffect,
 	useState,
 } from "react";
@@ -20,6 +21,15 @@ export default function MovieDetails({ params }) {
 	const [movieDetails, setMovieDetails] =
 		useState(null);
 	const [isOpen, setIsOpen] = useState(true);
+
+	const [collections, setCollections] = useState(
+		[]
+	);
+
+	const [
+		selectedCollection,
+		setSelectedCollection,
+	] = useState("");
 
 	const userLoggedIn = useAppSelector(
 		(state) => state.login.session_id
@@ -47,8 +57,72 @@ export default function MovieDetails({ params }) {
 			}
 		};
 
+		const fetchCollections = async () => {
+			const res = await fetch(
+				"/api/collections/"
+			);
+			const data = await res.json();
+			console.log(data);
+
+			setCollections(data.data);
+		};
+
 		fetchMovieDetails();
+		fetchCollections();
 	}, [movieId, API_KEY]);
+
+	const handleChange = (event) => {
+		setSelectedCollection(event.target.value); // Update selected collection
+
+		console.log(event.target.value);
+	};
+
+	const addMovieHandler = async () => {
+		try {
+			console.log(
+				movieDetails,
+				selectedCollection
+			);
+
+			const res = await fetch(
+				"/api/collection_movies_list/",
+				{
+					method: "POST",
+					body: JSON.stringify({
+						movie: {
+							title: movieDetails.title,
+							poster_path:
+								movieDetails.poster_path,
+							movieId,
+						},
+						collection: {
+							_id: selectedCollection,
+						},
+					}),
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			// if (!res.ok) {
+			// 	throw new Error(`Error: ${res.status}`);
+			// }
+
+			const data = await res.json();
+			console.log(
+				"Movie added successfully:",
+				data
+			);
+
+			return data;
+		} catch (error) {
+			console.error(
+				"Failed to add movie:",
+				error
+			);
+		}
+	};
 
 	const handleClose = () => {
 		setIsOpen(false);
@@ -75,6 +149,36 @@ export default function MovieDetails({ params }) {
 							<div className="flex flex-col justify-center items-center ">
 								<h2>Rate the movie</h2>
 								<MovieRatingStars />
+							</div>
+							<div>
+								<h3>Add to your Collection</h3>
+								<select
+									name=""
+									id=""
+									value={selectedCollection}
+									onChange={handleChange}
+								>
+									<option value="" disabled>
+										Select a collection
+									</option>
+									{collections.map(
+										(el, index) => (
+											<Fragment key={index}>
+												<option value={el._id}>
+													{" "}
+													{el.title}{" "}
+												</option>
+											</Fragment>
+										)
+									)}
+								</select>
+								<p>
+									<button
+										onClick={addMovieHandler}
+									>
+										Add to Collection
+									</button>
+								</p>
 							</div>
 						</div>
 						<p>
