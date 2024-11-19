@@ -1,29 +1,34 @@
-import React, { useRef, useState } from "react";
+import React, {
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import Notification from "./notification";
+import NotificationContext from "@/store/notification-context";
 
 export default function CreateCollection() {
 	const titleRef =
 		useRef<HTMLInputElement | null>(null);
 	const descriptionRef =
 		useRef<HTMLInputElement | null>(null);
-	const [errors, setErrors] = useState<
-		null | string
-	>(null);
-	const [collectionTitle, setCollectionTitle] =
-		useState<string | null>(null);
+
+	const notificationCtx = useContext(
+		NotificationContext
+	);
 
 	const saveCollectionHandler = () => {
 		const title = titleRef.current?.value || "";
 		const description =
 			descriptionRef.current?.value || "";
 
-		console.log(
-			"title:",
-			title,
-			"description:",
-			description
-		);
-
 		if (title !== "" && description !== "") {
+			notificationCtx.showNotification({
+				title: "Saving...",
+				message: "Saving your collection.",
+				status: "pending",
+			});
+
 			fetch("/api/collection/", {
 				method: "POST",
 				body: JSON.stringify({
@@ -33,39 +38,52 @@ export default function CreateCollection() {
 					"Content-Type": "application/json",
 				},
 			})
-				.then((res) => res.json())
+				.then((res) => {
+					if (!res.ok) {
+						throw new Error(
+							"Failed to save collection."
+						);
+					}
+					return res.json();
+				})
 				.then((data) => {
 					console.log(data);
 
-					setCollectionTitle(data.message);
-					setErrors(null);
-					setTimeout(
-						() => setCollectionTitle(null),
-						3000
-					);
+					notificationCtx.showNotification({
+						title: "Success!",
+						message:
+							"Your collection has been saved.",
+						status: "success",
+					});
 				})
 				.catch((error) => {
 					console.error("Error:", error);
-					setErrors(
-						"Failed to save collection. Please try again."
-					);
+
+					notificationCtx.showNotification({
+						title: "Error",
+						message:
+							"Failed to save collection. Please try again.",
+						status: "error",
+					});
 				});
 		} else {
-			setErrors("Empty Data");
-			setCollectionTitle(null);
+			notificationCtx.showNotification({
+				title: "Validation Error",
+				message:
+					"Title and description cannot be empty.",
+				status: "error",
+			});
 		}
 	};
 
-	const displayCollectionHandler = () => {
-		fetch("/api/collection/", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-			.then((res) => res.json())
-			.then((res) => console.log(res.data));
-	};
+	useEffect(() => {
+		if (notificationCtx.notification) {
+			console.log(
+				"Notification:",
+				notificationCtx.notification
+			);
+		}
+	}, [notificationCtx.notification]);
 
 	return (
 		<div className="border-2 bg-gray-50 w-1/2 flex items-center flex-col space-y-4">
@@ -76,10 +94,7 @@ export default function CreateCollection() {
 				Create your own Collection
 			</h3>
 			<div className="grid grid-2 gap-4 pb-4">
-				<form
-					className="flex w-full pb-4 space-x-5"
-					action=""
-				>
+				<form className="flex w-full pb-4 space-x-5">
 					<div className="flex flex-col">
 						<label htmlFor="title">
 							Give a name for your Collection
@@ -109,16 +124,6 @@ export default function CreateCollection() {
 					</div>
 				</form>
 
-				{errors && (
-					<p className="text-red-500">{errors}</p>
-				)}
-
-				{collectionTitle && (
-					<p className="text-green-500">
-						{collectionTitle}
-					</p>
-				)}
-
 				<div>
 					<button
 						className="bg-gray-400 p-2 rounded-xl hover:bg-gray-300"
@@ -128,11 +133,19 @@ export default function CreateCollection() {
 					</button>
 				</div>
 
-				{/* <button
-					onClick={displayCollectionHandler}
-				>
-					Show Collection
-				</button> */}
+				{notificationCtx.notification && (
+					<Notification
+						title={
+							notificationCtx.notification.title
+						}
+						message={
+							notificationCtx.notification.message
+						}
+						status={
+							notificationCtx.notification.status
+						}
+					/>
+				)}
 			</div>
 		</div>
 	);

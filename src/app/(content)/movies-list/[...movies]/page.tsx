@@ -3,12 +3,17 @@
 import { useRouter } from "next/navigation";
 import React, {
 	Fragment,
+	useContext,
 	useEffect,
 	useState,
 } from "react";
 import MovieModal from "../../components/movieModal";
 import MovieRatingStars from "../../components/movieRatingStars";
 import { useAppSelector } from "@/lib/hooks";
+import NotificationContext, {
+	NotificationContextProvider,
+} from "@/store/notification-context";
+import Notification from "../../components/notification";
 
 export default function MovieDetails({ params }) {
 	const router = useRouter();
@@ -33,6 +38,10 @@ export default function MovieDetails({ params }) {
 
 	const userLoggedIn = useAppSelector(
 		(state) => state.login.session_id
+	);
+
+	const notificationCtx = useContext(
+		NotificationContext
 	);
 
 	useEffect(() => {
@@ -84,38 +93,54 @@ export default function MovieDetails({ params }) {
 				selectedCollection
 			);
 
-			const res = await fetch(
-				"/api/collection_movies_list/",
-				{
-					method: "POST",
-					body: JSON.stringify({
-						movie: {
-							title: movieDetails.title,
-							poster_path:
-								movieDetails.poster_path,
-							movieId,
-						},
-						collection: {
-							_id: selectedCollection,
-						},
-					}),
-					headers: {
-						"Content-Type": "application/json",
+			notificationCtx.showNotification({
+				title: "Adding Movie...",
+				message:
+					"Movie will be added to your selected collection",
+				status: "pending",
+			});
+
+			fetch("/api/collection_movies_list/", {
+				method: "POST",
+				body: JSON.stringify({
+					movie: {
+						title: movieDetails.title,
+						poster_path: movieDetails.poster_path,
+						movieId,
 					},
-				}
-			);
-
-			// if (!res.ok) {
-			// 	throw new Error(`Error: ${res.status}`);
-			// }
-
-			const data = await res.json();
-			console.log(
-				"Movie added successfully:",
-				data
-			);
-
-			return data;
+					collection: {
+						_id: selectedCollection,
+					},
+				}),
+				headers: {
+					"Content-Type": "application/json",
+				},
+			})
+				.then((res) => {
+					if (!res.ok) {
+						throw new Error(
+							"Failed to add movie to collection."
+						);
+					}
+					return res.json();
+				})
+				.then((data) => {
+					notificationCtx.showNotification({
+						title: "Success",
+						message:
+							"Movie added to your collection!",
+						status: "success",
+					});
+				})
+				.catch((error) => {
+					notificationCtx.showNotification({
+						title: "Error!",
+						message:
+							error.message ||
+							"Movie could't be added to your collection",
+						status: "error",
+					});
+				});
 		} catch (error) {
 			console.error(
 				"Failed to add movie:",
@@ -179,6 +204,23 @@ export default function MovieDetails({ params }) {
 										Add to Collection
 									</button>
 								</p>
+
+								{notificationCtx.notification && (
+									<Notification
+										title={
+											notificationCtx.notification
+												.title
+										}
+										message={
+											notificationCtx.notification
+												.message
+										}
+										status={
+											notificationCtx.notification
+												.status
+										}
+									/>
+								)}
 							</div>
 						</div>
 						<p>
